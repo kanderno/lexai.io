@@ -1,0 +1,474 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); background: transparent; }
+:root {
+  --navy: #0F2442;
+  --gold: #C9A84C;
+  --gold-light: #F0DFA0;
+  --surface: var(--color-background-primary);
+  --surface2: var(--color-background-secondary);
+  --border: var(--color-border-tertiary);
+  --text: var(--color-text-primary);
+  --text2: var(--color-text-secondary);
+  --radius: var(--border-radius-lg);
+}
+.app { min-height: 600px; display: flex; flex-direction: column; }
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; background: var(--navy);
+  border-radius: var(--border-radius-lg); margin-bottom: 4px;
+  flex-wrap: wrap; gap: 8px;
+}
+.logo { display: flex; align-items: center; gap: 8px; }
+.logo-icon { width: 32px; height: 32px; background: var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.logo-text { color: #fff; font-size: 15px; font-weight: 500; }
+.logo-sub { color: #aaa; font-size: 11px; }
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav-btn {
+  background: transparent; border: 0.5px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.85); padding: 5px 12px; border-radius: 6px;
+  font-size: 12px; cursor: pointer; transition: all 0.15s;
+}
+.nav-btn:hover, .nav-btn.active { background: var(--gold); border-color: var(--gold); color: #000; }
+.page { display: none; flex: 1; }
+.page.active { display: block; }
+.hero {
+  background: linear-gradient(135deg, #0F2442 0%, #1a3a6e 100%);
+  border-radius: var(--radius); padding: 40px 28px; margin-bottom: 16px; color: #fff;
+}
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(201,168,76,0.2); border: 0.5px solid var(--gold); color: var(--gold-light); font-size: 11px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+.hero h1 { font-size: 26px; font-weight: 500; line-height: 1.3; margin-bottom: 12px; }
+.hero p { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.7; margin-bottom: 24px; max-width: 480px; }
+.hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.btn-gold:hover { background: #e0b85a; }
+.btn-outline { background: transparent; color: #fff; border: 0.5px solid rgba(255,255,255,0.4); padding: 10px 20px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.15s; }
+.btn-outline:hover { background: rgba(255,255,255,0.1); }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+.stat-n { font-size: 22px; font-weight: 500; color: #1a3a6e; }
+.stat-l { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.card {
+  background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius);
+  padding: 16px; cursor: pointer; transition: all 0.15s;
+}
+.card:hover { border-color: #1a3a6e; }
+.card-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 18px; }
+.card h3 { font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--text); }
+.card p { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.card-navy { background: #E6F1FB; } .card-gold { background: #FAF0D7; } .card-green { background: #EAF3DE; } .card-red { background: #FCEBEB; } .card-purple { background: #EEEDFE; } .card-teal { background: #E1F5EE; }
+.section-title { font-size: 16px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+.ai-panel { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+.ai-header { background: var(--navy); padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+.ai-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; }
+.ai-title { color: #fff; font-size: 13px; font-weight: 500; }
+.ai-messages { padding: 16px; min-height: 200px; max-height: 300px; overflow-y: auto; }
+.msg { margin-bottom: 12px; }
+.msg-user { text-align: right; }
+.msg-bubble { display: inline-block; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; max-width: 85%; }
+.msg-user .msg-bubble { background: #1a3a6e; color: #fff; border-bottom-right-radius: 3px; }
+.msg-ai .msg-bubble { background: var(--surface2); color: var(--text); border-bottom-left-radius: 3px; border: 0.5px solid var(--border); }
+.msg-name { font-size: 10px; color: var(--text2); margin-bottom: 3px; }
+.ai-footer { border-top: 0.5px solid var(--border); padding: 10px 12px; display: flex; gap: 8px; }
+.ai-footer input { flex: 1; border: 0.5px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 13px; background: var(--surface2); color: var(--text); }
+.ai-footer input:focus { outline: none; border-color: #1a3a6e; }
+.ai-send { background: var(--navy); color: #fff; border: none; border-radius: 6px; padding: 7px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.ai-send:hover { background: #1a3a6e; }
+.quick-btns { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 12px; border-top: 0.5px solid var(--border); }
+.quick-btn { background: var(--surface2); border: 0.5px solid var(--border); color: var(--text2); font-size: 11px; padding: 4px 10px; border-radius: 20px; cursor: pointer; }
+.quick-btn:hover { border-color: #1a3a6e; color: #1a3a6e; }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.tool-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.15s; }
+.tool-card:hover { border-color: #1a3a6e; }
+.tool-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.tool-icon { font-size: 20px; }
+.tool-card h3 { font-size: 13px; font-weight: 500; color: var(--text); }
+.tool-card p { font-size: 11px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
+.tool-action { font-size: 11px; color: #1a3a6e; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.docs-list { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.doc-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 0.5px solid var(--border); cursor: pointer; transition: background 0.1s; }
+.doc-item:last-child { border-bottom: none; }
+.doc-item:hover { background: var(--surface2); }
+.doc-ico { font-size: 18px; }
+.doc-info { flex: 1; }
+.doc-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.doc-meta { font-size: 11px; color: var(--text2); }
+.doc-badge { font-size: 10px; padding: 2px 8px; border-radius: 12px; }
+.badge-green { background: #EAF3DE; color: #3B6D11; }
+.badge-amber { background: #FAEEDA; color: #854F0B; }
+.badge-blue { background: #E6F1FB; color: #185FA5; }
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.contact-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.contact-card h3 { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+.contact-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--text2); }
+.contact-row i { color: #1a3a6e; font-size: 16px; }
+.contact-row a { color: #1a3a6e; text-decoration: none; }
+.contact-row a:hover { text-decoration: underline; }
+.footer { background: var(--navy); border-radius: var(--radius); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.footer-text { color: rgba(255,255,255,0.5); font-size: 11px; }
+.footer-links { display: flex; gap: 16px; }
+.footer-link { color: rgba(255,255,255,0.4); font-size: 11px; cursor: pointer; }
+.footer-link:hover { color: var(--gold); }
+.loading-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.typing { display: inline-flex; gap: 3px; align-items: center; padding: 4px 0; }
+.typing span { width: 5px; height: 5px; background: var(--text2); border-radius: 50%; animation: bounce 1s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.15s; }
+.typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
+</style>
+
+<h2 class="sr-only">LexAI — юридическая платформа с ИИ-советником для юристов Казахстана</h2>
+
+<div class="app">
+<nav class="nav">
+  <div class="logo">
+    <div class="logo-icon"><i class="ti ti-scale" style="color:#000;font-size:16px" aria-hidden="true"></i></div>
+    <div><div class="logo-text">LexAI</div><div class="logo-sub">Юридическая платформа</div></div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('home')"><i class="ti ti-home" aria-hidden="true"></i> Главная</button>
+    <button class="nav-btn" onclick="showPage('ai')"><i class="ti ti-robot" aria-hidden="true"></i> ИИ-советник</button>
+    <button class="nav-btn" onclick="showPage('tools')"><i class="ti ti-tool" aria-hidden="true"></i> Инструменты</button>
+    <button class="nav-btn" onclick="showPage('docs')"><i class="ti ti-files" aria-hidden="true"></i> Документы</button>
+    <button class="nav-btn" onclick="showPage('contacts')"><i class="ti ti-phone" aria-hidden="true"></i> Контакты</button>
+  </div>
+</nav>
+
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge"><i class="ti ti-sparkles" style="font-size:12px" aria-hidden="true"></i> ИИ-технологии в юриспруденции</div>
+    <h1>Умный помощник<br>для профессиональных юристов</h1>
+    <p>Автоматизируйте рутину, анализируйте договоры и получайте правовые подсказки с помощью искусственного интеллекта. Экономьте до 60% времени на каждом деле.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="showPage('ai')"><i class="ti ti-robot" aria-hidden="true"></i> Спросить ИИ</button>
+      <button class="btn-outline" onclick="showPage('tools')">Все инструменты →</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-n">500+</div><div class="stat-l">Активных юристов</div></div>
+    <div class="stat-card"><div class="stat-n">12 000</div><div class="stat-l">Документов проанализировано</div></div>
+    <div class="stat-card"><div class="stat-n">98%</div><div class="stat-l">Точность ИИ-анализа</div></div>
+  </div>
+
+  <div class="section-title">Основные разделы</div>
+  <div class="cards-grid">
+    <div class="card" onclick="showPage('ai')">
+      <div class="card-icon card-navy"><i class="ti ti-robot" style="color:#185FA5;font-size:18px" aria-hidden="true"></i></div>
+      <h3>ИИ-советник</h3>
+      <p>Задайте любой правовой вопрос и получите развёрнутый ответ мгновенно</p>
+    </div>
+    <div class="card" onclick="showPage('tools')">
+      <div class="card-icon card-gold"><i class="ti ti-file-text" style="color:#854F0B;font-size:18px" aria-hidden="true"></i></div>
+      <h3>Анализ договоров</h3>
+      <p>Автоматическая проверка договоров на риски и ошибки</p>
+    </div>
+    <div class="card" onclick="showPage('tools')">
+      <div class="card-icon card-green"><i class="ti ti-checklist" style="color:#3B6D11;font-size:18px" aria-hidden="true"></i></div>
+      <h3>Чек-листы дел</h3>
+      <p>Пошаговые инструкции по ведению любого вида дела</p>
+    </div>
+    <div class="card" onclick="showPage('docs')">
+      <div class="card-icon card-purple"><i class="ti ti-template" style="color:#534AB7;font-size:18px" aria-hidden="true"></i></div>
+      <h3>Шаблоны документов</h3>
+      <p>Готовые шаблоны исков, договоров, жалоб и актов</p>
+    </div>
+    <div class="card" onclick="showPage('tools')">
+      <div class="card-icon card-teal"><i class="ti ti-calendar" style="color:#0F6E56;font-size:18px" aria-hidden="true"></i></div>
+      <h3>Дедлайны</h3>
+      <p>Контроль сроков подачи документов и слушаний</p>
+    </div>
+    <div class="card" onclick="showPage('tools')">
+      <div class="card-icon card-red"><i class="ti ti-shield-check" style="color:#A32D2D;font-size:18px" aria-hidden="true"></i></div>
+      <h3>Правовые риски</h3>
+      <p>Оценка рисков дела на основе судебной практики</p>
+    </div>
+  </div>
+</div>
+
+<div id="page-ai" class="page">
+  <div class="section-title" style="margin-bottom:8px">ИИ-советник — задайте правовой вопрос</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Специализируется на законодательстве Республики Казахстан. Отвечает на вопросы по гражданскому, трудовому, административному и уголовному праву.</p>
+  <div class="ai-panel">
+    <div class="ai-header">
+      <div class="ai-dot"></div>
+      <div class="ai-title">LexAI советник онлайн</div>
+    </div>
+    <div class="ai-messages" id="ai-msgs">
+      <div class="msg msg-ai">
+        <div class="msg-name">LexAI</div>
+        <div class="msg-bubble">Здравствуйте! Я ваш юридический ИИ-ассистент. Специализируюсь на законодательстве Казахстана. Задайте вопрос по любой правовой ситуации — помогу разобраться с нормами права, составлением документов и стратегией ведения дела.</div>
+      </div>
+    </div>
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="askAI('Как расторгнуть трудовой договор?')">Расторжение трудового договора</button>
+      <button class="quick-btn" onclick="askAI('Что делать при нарушении договора поставки?')">Нарушение договора</button>
+      <button class="quick-btn" onclick="askAI('Как подать иск в суд в Казахстане?')">Подача иска</button>
+      <button class="quick-btn" onclick="askAI('Сроки исковой давности по ГК РК')">Исковая давность</button>
+    </div>
+    <div class="ai-footer">
+      <input type="text" id="ai-input" placeholder="Введите правовой вопрос..." onkeydown="if(event.key==='Enter')sendAI()" />
+      <button class="ai-send" onclick="sendAI()"><i class="ti ti-send" aria-hidden="true"></i> Отправить</button>
+    </div>
+  </div>
+</div>
+
+<div id="page-tools" class="page">
+  <div class="section-title">Инструменты юриста</div>
+  <div class="tools-grid">
+    <div class="tool-card" onclick="goTool('contract')">
+      <div class="tool-header"><span class="tool-icon"><i class="ti ti-file-analytics" style="color:#185FA5;font-size:20px" aria-hidden="true"></i></span><h3>Анализ договора</h3></div>
+      <p>Загрузите договор — ИИ проверит риски, выявит невыгодные условия и предложит правки.</p>
+      <div class="tool-action"><i class="ti ti-arrow-right" aria-hidden="true"></i> Открыть анализатор</div>
+    </div>
+    <div class="tool-card" onclick="goTool('checklist')">
+      <div class="tool-header"><span class="tool-icon"><i class="ti ti-list-check" style="color:#3B6D11;font-size:20px" aria-hidden="true"></i></span><h3>Чек-лист по делу</h3></div>
+      <p>Выберите тип дела и получите пошаговый план действий с нормами закона.</p>
+      <div class="tool-action"><i class="ti ti-arrow-right" aria-hidden="true"></i> Создать чек-лист</div>
+    </div>
+    <div class="tool-card" onclick="goTool('deadline')">
+      <div class="tool-header"><span class="tool-icon"><i class="ti ti-clock" style="color:#854F0B;font-size:20px" aria-hidden="true"></i></span><h3>Контроль сроков</h3></div>
+      <p>Автоматический расчёт процессуальных сроков и уведомления о дедлайнах.</p>
+      <div class="tool-action"><i class="ti ti-arrow-right" aria-hidden="true"></i> Управлять сроками</div>
+    </div>
+    <div class="tool-card" onclick="goTool('risk')">
+      <div class="tool-header"><span class="tool-icon"><i class="ti ti-shield" style="color:#A32D2D;font-size:20px" aria-hidden="true"></i></span><h3>Оценка рисков</h3></div>
+      <p>Анализ шансов на успех дела на основе судебной практики РК.</p>
+      <div class="tool-action"><i class="ti ti-arrow-right" aria-hidden="true"></i> Оценить риски</div>
+    </div>
+    <div class="tool-card" onclick="goTool('search')">
+      <div class="tool-header"><span class="tool-icon"><i class="ti ti-search" style="color:#534AB7;font-size:20px" aria-hidden="true"></i></span><h3>Поиск по законам</h3></div>
+      <p>Умный поиск по Кодексам и законам РК с разъяснениями от ИИ.</p>
+      <div class="tool-action"><i class="ti ti-arrow-right" aria-hidden="true"></i> Поиск норм</div>
+    </div>
+    <div class="tool-card" onclick="goTool('draft')">
+      <div class="tool-header"><span class="tool-icon"><i class="ti ti-pencil" style="color:#0F6E56;font-size:20px" aria-hidden="true"></i></span><h3>Генерация документов</h3></div>
+      <p>Создание исков, претензий, договоров и жалоб по вашим данным.</p>
+      <div class="tool-action"><i class="ti ti-arrow-right" aria-hidden="true"></i> Создать документ</div>
+    </div>
+  </div>
+
+  <div id="tool-panel" style="display:none;margin-top:16px;">
+    <div class="ai-panel">
+      <div class="ai-header">
+        <div class="ai-dot"></div>
+        <div class="ai-title" id="tool-title">Инструмент</div>
+      </div>
+      <div class="ai-messages" id="tool-msgs" style="min-height:160px;"></div>
+      <div class="ai-footer">
+        <input type="text" id="tool-input" placeholder="Опишите ситуацию или задайте вопрос..." onkeydown="if(event.key==='Enter')sendTool()" />
+        <button class="ai-send" onclick="sendTool()"><i class="ti ti-send" aria-hidden="true"></i> Запустить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-docs" class="page">
+  <div class="section-title">Шаблоны и документы</div>
+  <div class="docs-list">
+    <div class="doc-item" onclick="openDoc('Исковое заявление о взыскании долга')"><span class="doc-ico"><i class="ti ti-file-text" style="color:#185FA5" aria-hidden="true"></i></span><div class="doc-info"><div class="doc-name">Исковое заявление о взыскании долга</div><div class="doc-meta">Гражданское право · Суд первой инстанции</div></div><span class="doc-badge badge-green">Актуально</span></div>
+    <div class="doc-item" onclick="openDoc('Трудовой договор (стандартный)')"><span class="doc-ico"><i class="ti ti-file-certificate" style="color:#3B6D11" aria-hidden="true"></i></span><div class="doc-info"><div class="doc-name">Трудовой договор (стандартный)</div><div class="doc-meta">Трудовое право · ТК РК</div></div><span class="doc-badge badge-green">Актуально</span></div>
+    <div class="doc-item" onclick="openDoc('Претензия о нарушении условий договора')"><span class="doc-ico"><i class="ti ti-file-alert" style="color:#854F0B" aria-hidden="true"></i></span><div class="doc-info"><div class="doc-name">Претензия о нарушении условий договора</div><div class="doc-meta">Договорное право · Досудебное урегулирование</div></div><span class="doc-badge badge-amber">Обновить</span></div>
+    <div class="doc-item" onclick="openDoc('Апелляционная жалоба')"><span class="doc-ico"><i class="ti ti-file-description" style="color:#534AB7" aria-hidden="true"></i></span><div class="doc-info"><div class="doc-name">Апелляционная жалоба</div><div class="doc-meta">Процессуальное право · Апелляционная инстанция</div></div><span class="doc-badge badge-blue">Шаблон</span></div>
+    <div class="doc-item" onclick="openDoc('Договор купли-продажи недвижимости')"><span class="doc-ico"><i class="ti ti-home" style="color:#0F6E56" aria-hidden="true"></i></span><div class="doc-info"><div class="doc-name">Договор купли-продажи недвижимости</div><div class="doc-meta">Гражданское право · Нотариальная форма</div></div><span class="doc-badge badge-green">Актуально</span></div>
+    <div class="doc-item" onclick="openDoc('Жалоба в прокуратуру')"><span class="doc-ico"><i class="ti ti-file-report" style="color:#A32D2D" aria-hidden="true"></i></span><div class="doc-info"><div class="doc-name">Жалоба в прокуратуру</div><div class="doc-meta">Административное право · Надзорные органы</div></div><span class="doc-badge badge-blue">Шаблон</span></div>
+    <div class="doc-item" onclick="openDoc('Доверенность')"><span class="doc-ico"><i class="ti ti-license" style="color:#185FA5" aria-hidden="true"></i></span><div class="doc-info"><div class="doc-name">Доверенность (генеральная / на представление)</div><div class="doc-meta">Гражданское право · Нотариальная форма</div></div><span class="doc-badge badge-green">Актуально</span></div>
+  </div>
+  <div id="doc-panel" style="display:none;margin-top:12px;">
+    <div class="ai-panel">
+      <div class="ai-header"><div class="ai-dot"></div><div class="ai-title" id="doc-title">Документ</div></div>
+      <div class="ai-messages" id="doc-msgs" style="min-height:140px;"></div>
+      <div class="ai-footer">
+        <input type="text" id="doc-input" placeholder="Уточните детали для составления документа..." onkeydown="if(event.key==='Enter')sendDoc()" />
+        <button class="ai-send" onclick="sendDoc()"><i class="ti ti-wand" aria-hidden="true"></i> Составить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-contacts" class="page">
+  <div class="section-title">Контакты</div>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <h3><i class="ti ti-building" aria-hidden="true"></i> LexAI Kazakhstan</h3>
+      <div class="contact-row"><i class="ti ti-phone" aria-hidden="true"></i><a href="tel:87779840605">8 777 984 06 05</a></div>
+      <div class="contact-row"><i class="ti ti-mail" aria-hidden="true"></i><a href="mailto:info@lexai.kz">info@lexai.kz</a></div>
+      <div class="contact-row"><i class="ti ti-map-pin" aria-hidden="true"></i><span>г. Астана, Казахстан</span></div>
+      <div class="contact-row"><i class="ti ti-clock" aria-hidden="true"></i><span>Пн–Пт: 9:00–18:00</span></div>
+    </div>
+    <div class="contact-card">
+      <h3><i class="ti ti-headset" aria-hidden="true"></i> Техподдержка</h3>
+      <div class="contact-row"><i class="ti ti-brand-telegram" aria-hidden="true"></i><a href="#">@lexai_support</a></div>
+      <div class="contact-row"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i><a href="tel:87779840605">8 777 984 06 05</a></div>
+      <div class="contact-row"><i class="ti ti-circle-check" aria-hidden="true"></i><span>Ответ в течение 2 часов</span></div>
+    </div>
+    <div class="contact-card">
+      <h3><i class="ti ti-info-circle" aria-hidden="true"></i> О компании</h3>
+      <div class="contact-row"><i class="ti ti-calendar" aria-hidden="true"></i><span>Основана в 2023 году</span></div>
+      <div class="contact-row"><i class="ti ti-users" aria-hidden="true"></i><span>Команда юристов и разработчиков</span></div>
+      <div class="contact-row"><i class="ti ti-license" aria-hidden="true"></i><span>Лицензия Минюст РК №2023-042</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-text">© 2023–2026 LexAI Kazakhstan. Все права защищены.</div>
+  <div class="footer-links">
+    <span class="footer-link" onclick="showPage('home')">Главная</span>
+    <span class="footer-link" onclick="showPage('ai')">ИИ-советник</span>
+    <span class="footer-link" onclick="showPage('contacts')">Контакты</span>
+  </div>
+  <div class="footer-text">Тел: 8 777 984 06 05</div>
+</div>
+</div>
+
+<script>
+const API_KEY = "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";
+const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+const SYSTEM = `Ты профессиональный юридический советник, специализирующийся на законодательстве Республики Казахстан. 
+Отвечай на вопросы юристов, ссылаясь на конкретные статьи законов РК (ГК, ТК, УК, КоАП, ГПК и др.). 
+Давай чёткие практические рекомендации. Будь точным и конкретным. Отвечай на русском языке. 
+Структурируй ответы для удобства юриста: сначала краткий вывод, затем правовая база, затем рекомендуемые действия.`;
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = {home:0,ai:1,tools:2,docs:3,contacts:4};
+  btns[map[id]].classList.add('active');
+}
+
+function addMsg(container, role, text) {
+  const div = document.createElement('div');
+  div.className = 'msg msg-' + role;
+  div.innerHTML = `<div class="msg-name">${role==='user'?'Вы':'LexAI'}</div><div class="msg-bubble">${text}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function showTyping(container) {
+  const div = document.createElement('div');
+  div.className = 'msg msg-ai';
+  div.innerHTML = `<div class="msg-name">LexAI</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+async function callAI(question, systemPrompt) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: 600,
+      messages: [
+        { role: 'system', content: systemPrompt || SYSTEM },
+        { role: 'user', content: question }
+      ]
+    })
+  });
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || 'Не удалось получить ответ.';
+}
+
+async function sendAI() {
+  const inp = document.getElementById('ai-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  const msgs = document.getElementById('ai-msgs');
+  addMsg(msgs, 'user', q);
+  const typing = showTyping(msgs);
+  try {
+    const ans = await callAI(q);
+    typing.remove();
+    addMsg(msgs, 'ai', ans.replace(/\n/g,'<br>'));
+  } catch(e) {
+    typing.remove();
+    addMsg(msgs, 'ai', 'Ошибка соединения. Попробуйте позже.');
+  }
+}
+
+async function askAI(q) {
+  showPage('ai');
+  document.getElementById('ai-input').value = q;
+  await sendAI();
+}
+
+let currentTool = '';
+async function goTool(tool) {
+  const titles = {contract:'Анализ договора',checklist:'Чек-лист по делу',deadline:'Контроль сроков',risk:'Оценка рисков',search:'Поиск по законам',draft:'Генерация документов'};
+  const prompts = {
+    contract:'Ты эксперт по анализу договоров по законодательству РК. Проверь договор на риски, укажи на невыгодные условия, ссылайся на ГК РК.',
+    checklist:'Ты юрист-практик РК. Создай подробный пошаговый чек-лист для ведения указанного типа дела со ссылками на нормы.',
+    deadline:'Ты процессуальный юрист РК. Рассчитай сроки и дедлайны для указанного процессуального действия согласно ГПК и другим кодексам РК.',
+    risk:'Ты аналитик судебной практики РК. Оцени риски и шансы на успех дела, опираясь на судебную практику и нормы РК.',
+    search:'Ты правовой справочник по законодательству РК. Найди и разъясни соответствующие нормы закона, статьи кодексов.',
+    draft:'Ты юрист-документовед РК. Составь юридический документ согласно требованиям законодательства РК.'
+  };
+  currentTool = prompts[tool];
+  document.getElementById('tool-title').textContent = titles[tool];
+  const panel = document.getElementById('tool-panel');
+  const msgs = document.getElementById('tool-msgs');
+  msgs.innerHTML = '';
+  addMsg(msgs, 'ai', `Инструмент "${titles[tool]}" готов. Опишите вашу ситуацию или задачу.`);
+  panel.style.display = 'block';
+  document.getElementById('tool-input').focus();
+}
+
+async function sendTool() {
+  const inp = document.getElementById('tool-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  const msgs = document.getElementById('tool-msgs');
+  addMsg(msgs, 'user', q);
+  const typing = showTyping(msgs);
+  try {
+    const ans = await callAI(q, currentTool);
+    typing.remove();
+    addMsg(msgs, 'ai', ans.replace(/\n/g,'<br>'));
+  } catch(e) {
+    typing.remove();
+    addMsg(msgs, 'ai', 'Ошибка соединения. Попробуйте позже.');
+  }
+}
+
+let currentDoc = '';
+function openDoc(name) {
+  currentDoc = name;
+  document.getElementById('doc-title').textContent = name;
+  const msgs = document.getElementById('doc-msgs');
+  msgs.innerHTML = '';
+  addMsg(msgs, 'ai', `Готов составить "${name}". Укажите необходимые данные: стороны, суть, суммы, даты — и я создам документ по нормам РК.`);
+  document.getElementById('doc-panel').style.display = 'block';
+  document.getElementById('doc-input').focus();
+  document.getElementById('doc-panel').scrollIntoView({behavior:'smooth'});
+}
+
+async function sendDoc() {
+  const inp = document.getElementById('doc-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  const msgs = document.getElementById('doc-msgs');
+  addMsg(msgs, 'user', q);
+  const typing = showTyping(msgs);
+  const sys = `Ты юрист-документовед РК. Составь "${currentDoc}" по данным пользователя. Используй правильные юридические формулировки по законодательству РК. Структурируй документ как настоящий юридический документ.`;
+  try {
+    const ans = await callAI(q, sys);
+    typing.remove();
+    addMsg(msgs, 'ai', ans.replace(/\n/g,'<br>'));
+  } catch(e) {
+    typing.remove();
+    addMsg(msgs, 'ai', 'Ошибка соединения. Попробуйте позже.');
+  }
+}
+</script>
